@@ -1,0 +1,17 @@
+
+ORG	0000H
+
+MAIN:          
+       	; 92H, E3H, 66H, 87H, F5H
+		; OR MOV R2, #92H
+		; THEN ADD A, R2; AND SO ON
+		MOV A, #92H		 ; MOVE FIRST VALUE INTO A
+		ADD A, #0E3H	 ; ADD NEXT VAL TO A
+		ADD A, #66H
+		ADD A, #87H
+		ADD A, #0F5H
+		;ADD A, RO
+
+		MOV R1,A   ; MOV TO R1
+		SJMP MAIN
+	   	END

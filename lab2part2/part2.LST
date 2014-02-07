@@ -1,0 +1,53 @@
+A51 MACRO ASSEMBLER  PART2                                                                01/31/2014 11:58:40 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02
+OBJECT MODULE PLACED IN part2.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE part2.a51 SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     ORG     0000H
+                       2     
+0000                   3     MAIN:   
+                       4                     ;values A3H, 24H, 38H, 7CH, D3H,79H 
+                       5                     ;move to 31H - 36H      
+0000 7531A3            6                     MOV 31H, #0A3H
+0003 753224            7                     MOV 32H, #24H
+0006 753338            8                     MOV 33H, #38H
+0009 75347C            9                     MOV 34H, #7CH
+000C 7535D3           10                     MOV 35H, #0D3H
+000F 753679           11                     MOV 36H, #79H
+                      12     
+0012 C031             13                     PUSH 31H ; push val found in 31H to Stack (pointing to 7) incremented by 1
+0014 C032             14                     PUSH 32H
+0016 C033             15                     PUSH 33H
+0018 C034             16                     PUSH 34H
+001A C035             17                     PUSH 35H
+001C C036             18                     PUSH 36H
+                      19     
+001E D000             20                     POP 0
+0020 D001             21                     POP 1
+0022 D002             22                     POP 2
+0024 D003             23                     POP 3
+0026 D004             24                     POP 4
+0028 D005             25                     POP 5
+                      26     
+002A 80D4             27                     SJMP MAIN
+                      28                     
+                      29                     END
+A51 MACRO ASSEMBLER  PART2                                                                01/31/2014 11:58:40 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+MAIN . . . . . . .  C ADDR   0000H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

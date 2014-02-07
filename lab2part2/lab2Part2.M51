@@ -1,0 +1,59 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        01/31/2014  11:58:40  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE part2.obj TO lab2Part2 RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  part2.obj (PART2)
+
+
+LINK MAP OF MODULE:  lab2Part2 (PART2)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     002CH     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  lab2Part2 (PART2)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        PART2
+  C:0000H         SYMBOL        MAIN
+  C:0000H         LINE#         6
+  C:0003H         LINE#         7
+  C:0006H         LINE#         8
+  C:0009H         LINE#         9
+  C:000CH         LINE#         10
+  C:000FH         LINE#         11
+  C:0012H         LINE#         13
+  C:0014H         LINE#         14
+  C:0016H         LINE#         15
+  C:0018H         LINE#         16
+  C:001AH         LINE#         17
+  C:001CH         LINE#         18
+  C:001EH         LINE#         20
+  C:0020H         LINE#         21
+  C:0022H         LINE#         22
+  C:0024H         LINE#         23
+  C:0026H         LINE#         24
+  C:0028H         LINE#         25
+  C:002AH         LINE#         27
+  -------         ENDMOD        PART2
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 002CH BYTE ( 2%) *
+******************************************************************************
+
+Program Size: data=8.0 xdata=0 code=44
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

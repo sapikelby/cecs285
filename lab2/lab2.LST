@@ -1,0 +1,41 @@
+A51 MACRO ASSEMBLER  LAB2                                                                 01/31/2014 11:22:50 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02
+OBJECT MODULE PLACED IN lab2.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE lab2.a51 SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+0000                   2     ORG     0000H
+                       3     
+0000                   4     MAIN:          
+                       5             ; 92H, E3H, 66H, 87H, F5H
+                       6                     ; OR MOV R2, #92H
+                       7                     ; THEN ADD A, R2; AND SO ON
+0000 7492              8                     MOV A, #92H              ; MOVE FIRST VALUE INTO A
+0002 24E3              9                     ADD A, #0E3H     ; ADD NEXT VAL TO A
+0004 2466             10                     ADD A, #66H
+0006 2487             11                     ADD A, #87H
+0008 24F5             12                     ADD A, #0F5H
+                      13                     ;ADD A, RO
+                      14     
+000A F9               15                     MOV R1,A   ; MOV TO R1
+000B 80F3             16                     SJMP MAIN
+                      17                     END
+A51 MACRO ASSEMBLER  LAB2                                                                 01/31/2014 11:22:50 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+MAIN . . . . . . .  C ADDR   0000H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
