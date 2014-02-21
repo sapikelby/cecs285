@@ -1,0 +1,148 @@
+
+; LAB 2
+ORG 0
+
+; 4 INSTANCES WHERE CY = 1
+MOV A, #92H
+ADD A, #0E3H ;OBSERVE CARRY
+ADD A, #66H 
+ADD A, #87H 
+ADD A, #0F5H
+
+MOV R1, A
+
+SJMP $  ; CONVENIENT FOR DEBUGGING, PROGRAM NEVER EXITS
+END
+
+
+;PART 2
+ORG	0000H
+
+MAIN:   
+		;values A3H, 24H, 38H, 7CH, D3H,79H 
+		;move to 31H - 36H      
+		MOV 31H, #0A3H
+		MOV 32H, #24H
+		MOV 33H, #38H
+		MOV 34H, #7CH
+		MOV 35H, #0D3H
+		MOV 36H, #79H
+
+		; push values found in 31H-36H to Stack (pointing to 7, but starting at 8) 
+		; stack is then incremented by 1
+		PUSH 31H 
+		PUSH 32H
+		PUSH 33H
+		PUSH 34H
+		PUSH 35H
+		PUSH 36H
+		
+		; pops values found in stack 
+		; registers 0-5 are then filled
+		; stack is decremented by 1 on every pop
+		; OBSERVE STACK POINTER, REGISTERS, ETC
+		POP 0 ; DIRECT ADDRESSING (8)
+		POP 1
+		POP 2
+		POP 3
+		POP 4
+		POP 5
+
+		SJMP MAIN
+	   	
+		END
+		
+;LAB 3 PART1
+ORG 0
+
+	MOV A, #0 ; CLEAR A
+	MOV R2, #255  ;counter
+	MOV R1, #0	 
+AGAIN: ADD A, R2 ; loop
+	JNC SKIP
+	INC R1		; increment R1 for each carry
+SKIP: DJNZ R2, AGAIN
+	MOV R0, A ;SAVE THE FINAL RESULT IN RO
+	END
+
+
+;MODIFIED AFTER LAB
+	ORG 0
+	;MOV A, #0 ; CLEAR A
+	MOV R0, #0FFH  ; counter
+	CLR A
+	MOV R1, A
+AGAIN: ADD A, R0 ; loop
+	JNC SKIP
+	INC R1		; increment R1 for each carry
+SKIP: DJNZ R0, AGAIN
+	MOV R0, A ;SAVE THE FINAL RESULT IN RO
+	SJMP $
+	END
+	
+	
+;PART 2
+ORG 0
+		;MOV R4, #1;
+		MOV R1, #10	; outer loop 
+		MOV A, R4 ; LOAD R4 into A
+		JZ JUMP		  ; check if R4 = 0
+		MOV A, #88H
+		SJMP HERE
+JUMP: 	MOV A, #66H 
+
+		
+HERE:	MOV R2, #100 ; 	inner loop
+
+AGAIN: 	
+		CPL A
+		DJNZ R2, AGAIN  
+		DJNZ R1, HERE
+		SJMP $
+		END
+		
+; MODIFIED AFTER LAB
+ORG 0
+MOV A, R4
+JZ ZERO
+MOV A, #88H
+SJMP CONT 
+ZERO: MOV A, #66H
+CONT: MOV R1, #100
+OUTER: MOV R2, #10
+INNER: CPL A
+		DJNZ R2, INNER
+		DJNZ R1, OUTER
+		SJMP $
+		END
+
+
+;LAB 4 MODIFIED AFTER LAB
+
+;LJMP MAIN NOT NEEDED SINCE WE ARE NOT USING INTERRUPT
+
+;ORG 0030H
+;MAIN: 
+ORG 0000H
+	MOV A, #01H
+LOOP: MOV P1, A
+		RL A
+		LCALL DELAY ; BREAKPT HERE
+		SJMP LOOP
+		ORG 0A00H
+DELAY:
+		MOV R3, #0FFH   ; BREAKPT HERE
+DLY0: 	MOV R1, #0FFH
+DLY1: MOV R2, #0FFH
+DLY2: DJNZ R2, DLY2
+	DJNZ R1, DLY1
+	DJNZ R3, DLY0
+	RET
+	; IN THE STACK 
+	; LOCATION 8: 08
+	; LOCATION 8: 00 SO ADDRESS OF NEXT LINE TO EXECUTE 0008
+	; DISASSEMBLY WINDOW SHOWS YOU THE CODE AS IT'S BEING ASSEMBLED
+
+
+; ; LARGEST ADDRESS THAT CAN BE REACHED BY
+; ACALL IS 7FF (11 BITS)
