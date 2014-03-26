@@ -1,0 +1,286 @@
+A51 MACRO ASSEMBLER  PROJECT1                                                             03/25/2014 17:25:54 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02b
+OBJECT MODULE PLACED IN project1.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE project1.a51 SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ; ----- Kelby Sapien
+                       2     ; ----- Project 1
+  00A7                 3                     FLAG BIT P2.7
+                       4                     
+0000                   5                     ORG 0000H
+0000 020016            6                     LJMP MAIN
+                       7                     
+0003                   8                     ORG 0003H
+0003 C2A7              9                     CLR FLAG
+0005 32               10                     RETI
+                      11                     
+0013                  12                     ORG 0013H
+0013 D2A7             13                     SETB FLAG
+0015 32               14                     RETI
+                      15                     
+0016 7590FF           16     MAIN:   MOV P1, #0FFH
+0019 C2A7             17                     CLR FLAG
+001B 308005           18     AGAIN:  JNB P0.0, CHECK_COUNT   ; JUMP if P0.0 is low, otherwise do bouncing cat
+001E 1200B8           19                     LCALL BOUNCING                    ; lower pins have higher priority
+0021 80F8             20                     SJMP AGAIN
+                      21                     
+0023                  22     CHECK_COUNT:                                                                               
+                                                                                                              
+0023 308105           23                     JNB P0.1, CHECK_DB  ; JUMP if P0.1 is low, otherwise do counting
+0026 12006A           24                     LCALL COUNT
+0029 80F0             25                     SJMP AGAIN                ; AT EACH BRANCH, YOU WANT TO GO BACK TO AGAIN AN
+                             D CHECK FOR PIN PRIORITY
+                      26     
+002B                  27     CHECK_DB:
+002B 308205           28                     JNB P0.2, CHECK_CYC ; JUMP if P0.2 is low, otherwise do double_bounce
+002E 12007F           29                     LCALL DOUBLE_BOUNCE
+0031 80E8             30                     SJMP AGAIN
+                      31     
+0033                  32     CHECK_CYC: 
+0033 308305           33                     JNB P0.3, ERR   ; JUMP if P0.3 is low to error state, otherwise do cyclic m
+                             ode
+0036 12004A           34                     LCALL CYCLIC
+0039 80E0             35                     SJMP AGAIN
+                      36     
+003B                  37     ERR:    ; IF ALL PINS ARE OFF, THEN JUST FLASH THEM                                        
+                                                                                                                                       
+003B 7590FF           38                     MOV P1,#0FFH
+003E 1200D7           39                     LCALL DELAY
+0041 759000           40                     MOV P1, #0
+0044 1200D7           41                     LCALL DELAY
+0047 02001B           42                     LJMP AGAIN
+                      43     
+                      44     ; ---- CYCLIC MODE
+004A                  45     CYCLIC: 
+                      46                     ;JB P0.0, JUMP2_BOUNCE ; RETURN TO PREVIOUS MODE IF PRESSED
+                      47                     ;JB P0.1, COUNT
+                      48                     ;JB P0.2, DOUBLE_BOUNCE
+                      49                     ;JNB P0.3, CYCLIC_DONE  ; replaced with the interrupt
+004A 20A719           50                     JB FLAG, CYCLIC_DONE
+                      51                     ;MOV A, #0H
+004D 759000           52                     MOV P1, #0
+0050 1200D7           53                     LCALL DELAY
+0053 7480             54                     MOV A, #80H
+A51 MACRO ASSEMBLER  PROJECT1                                                             03/25/2014 17:25:54 PAGE     2
+
+0055 7D08             55                     MOV R5, #8
+0057                  56     AGAIN2:         
+                      57                     ;JB P0.0, BOUNCING ; RETURN TO PREVIOUS MODE IF PRESSED
+                      58                     ;JB P0.1, COUNT
+                      59                     ;JB P0.2, DOUBLE_BOUNCE
+                      60                     ;JNB P0.3, CYCLIC_DONE ; REPLACED WITH INTERRUPT FLAG
+0057 20A70C           61                     JB FLAG, CYCLIC_DONE
+005A F590             62                     MOV P1, A
+005C 1200D7           63                     LCALL DELAY
+005F FE               64                     MOV R6, A
+0060 03               65                     RR A
+0061 4E               66                     ORL A, R6
+                      67                     ;MOV P1, A
+                      68                     ;LCALL DELAY
+0062 DDF3             69                     DJNZ R5, AGAIN2
+0064 80E4             70                     SJMP CYCLIC
+                      71     
+0066 22               72     CYCLIC_DONE: RET
+                      73     
+0067                  74     JUMP2_BOUNCE:
+0067 0200B8           75                     LJMP BOUNCING
+                      76     
+                      77     ;---- COUNTING MODE
+006A                  78     COUNT:  
+                      79                     ;JB P0.0, BOUNCING
+006A 20A711           80                     JB FLAG, C_DONE
+006D 759000           81             MOV P1, #0
+0070 7BFF             82                     MOV R3, #0FFH
+0072                  83     DO_AGAIN:
+                      84                     ;JB P0.0, BOUNCING
+                      85                     ;JNB P0.1, C_DONE
+0072 20A709           86                     JB FLAG, C_DONE
+                      87                     ;JNB P0.3, ERR
+0075 1200D7           88             LCALL DELAY             
+0078 0590             89                     INC P1
+007A DBF6             90                     DJNZ R3, DO_AGAIN
+007C 809D             91                     SJMP AGAIN
+007E 22               92     C_DONE: RET
+                      93     
+                      94     
+                      95     ; --- DOUBLE BOUNCE
+                      96     ; BE CAREFUL, R1-R3 ARE USED BY DELAY FUNCTION
+                      97     ; KEPT GETTING ERRORS B/C OF IT
+                      98     ; fix overlap by calling two different loops
+007F                  99     DOUBLE_BOUNCE:
+                     100                     ;JB P0.0, BOUNCING
+                     101                     ;JB P0.1, COUNT ; JUMP BACK TO COUNTING MODE IF P0.1 IS HIGH
+                     102                     ;JNB P0.2, D_BOUNCE_DONE
+007F 20A735          103                     JB FLAG, D_BOUNCE_DONE
+0082 7C80            104                     MOV R4, #80H ; 1000 0000
+0084 7D01            105                     MOV R5, #01H ; 0000 0001
+0086 7E03            106                     MOV R6, #3 ; COUNTER
+                     107             
+0088 EC              108                     MOV A, R4 ; store initial R1 VAL into A = 1000 0000
+                     109                     
+0089 4D              110                     ORL A, R5 ; A = 1000 0001
+008A F590            111                     MOV P1, A ; DISPLAYS IN LED
+008C 1200D7          112                     LCALL DELAY
+                     113                     
+008F                 114     PART1:
+                     115                     ;JB P0.0, BOUNCING
+                     116                     ;JB P0.1, COUNT
+                     117                     ;JNB P0.2, D_BOUNCE_DONE
+008F 20A725          118                     JB FLAG, D_BOUNCE_DONE          
+                     119                     ;CLR A
+0092 EC              120                     MOV A, R4 ; A = 1000 0000
+A51 MACRO ASSEMBLER  PROJECT1                                                             03/25/2014 17:25:54 PAGE     3
+
+0093 03              121                     RR A   ;        A = 0100 0000
+0094 FC              122                     MOV R4, A ;R1 = 0100 0000
+0095 ED              123                     MOV A, R5 ; A = 0000 0001
+0096 23              124                     RL A      ; A = 0000 0010
+0097 FD              125                     MOV R5, A ;R2 = 0000 0010
+0098 4C              126                     ORL A, R4 ; R1 OR R2 A = 0100 0010 FIRST RUN
+                     127                     ;CJNE A,   ; jump when 10 or 0001 1000
+0099 F590            128                     MOV P1, A ; DISPLAY
+009B 1200D7          129                     LCALL DELAY
+009E DEEF            130                     DJNZ R6, PART1
+00A0 7E02            131                     MOV R6, #2 ; RESET COUNTER
+00A2 8000            132                     SJMP PART2
+                     133     
+                     134                     
+00A4                 135     PART2:
+                     136                     ;JB P0.0, BOUNCING
+                     137                     ;JB P0.1, COUNT
+                     138                     ;JNB P0.2, D_BOUNCE_DONE        
+00A4 20A710          139                     JB FLAG, D_BOUNCE_DONE
+                     140                     ;CLR A
+00A7 EC              141                     MOV A, R4 ; A = 1000 0000
+00A8 23              142                     RL A   ;        A = 0100 0000
+00A9 FC              143                     MOV R4, A ;R1 = 0100 0000
+00AA ED              144                     MOV A, R5 ; A = 0000 0001
+00AB 03              145                     RR A      ; A = 0000 0010
+00AC FD              146                     MOV R5, A ;R2 = 0000 0010
+00AD 4C              147                     ORL A, R4 ; R1 OR R2 A = 0100 0010 FIRST RUN
+                     148                     ;CJNE A,   ; jump when 10 or 0001 1000
+00AE F590            149                     MOV P1, A ; DISPLAY
+00B0 1200D7          150                     LCALL DELAY
+00B3 DEEF            151                     DJNZ R6, PART2
+00B5 80C8            152                     SJMP DOUBLE_BOUNCE              
+                     153                     
+                     154     
+00B7 22              155     D_BOUNCE_DONE:  RET
+                     156     
+                     157     ; -- BOUNCING
+00B8                 158     BOUNCING:
+00B8 7401            159                     MOV A, #01H
+00BA 7808            160                     MOV R0, #8
+00BC                 161     LEFT:   ;JNB P0.0, B_DONE          ; RETURN IF DONE
+00BC 20A717          162                     JB FLAG, B_DONE
+00BF 03              163                     RR A
+00C0 F590            164                     MOV P1, A
+00C2 1200D7          165                     LCALL DELAY
+00C5 D8F5            166                     DJNZ R0, LEFT ; USE A LOOP TO MOVE 7 POSITIONS
+00C7 7806            167                     MOV R0, #6    ; RESET COUNTER
+00C9                 168     RIGHT:  ;JNB P0.0, B_DONE          ; RETURN IF DONE
+00C9 20A70A          169                     JB FLAG, B_DONE
+00CC 23              170                     RL A
+00CD F590            171                     MOV P1, A
+                     172                     
+00CF 1200D7          173                     LCALL DELAY
+00D2 D8F5            174                     DJNZ R0, RIGHT
+00D4 80E2            175                     SJMP BOUNCING ; REPEAT THE WHOLE SEQUENCE AGAIN
+00D6 22              176     B_DONE: RET
+                     177     
+                     178     
+                     179     ; -----------DELAY FUNCTION
+00D7                 180     DELAY:
+00D7 7BDC            181                     MOV R3, #220
+                     182     
+00D9                 183     HALF_SEC_CHK:                            ; LOWER PINS HAVE HIGHER PRIORITY
+00D9 308404          184                     JNB P0.4, ONE_SEC_CHK   
+00DC 7F01            185                     MOV R7, #1                        
+00DE 8019            186                     SJMP DLY
+A51 MACRO ASSEMBLER  PROJECT1                                                             03/25/2014 17:25:54 PAGE     4
+
+                     187     
+00E0                 188     ONE_SEC_CHK:    
+00E0 308504          189                     JNB P0.5, ONE_HALF_CHK  
+00E3 7F02            190                     MOV R7, #2                        
+00E5 8012            191                     SJMP DLY
+                     192     
+00E7                 193     ONE_HALF_CHK:   
+00E7 308604          194                     JNB P0.6, TWO_SEC_CHK   
+00EA 7F03            195                     MOV R7, #3                        
+00EC 800B            196                     SJMP DLY
+00EE                 197     TWO_SEC_CHK:    
+00EE 308704          198                     JNB P0.7, ERR_DELAY     
+00F1 7F04            199                     MOV R7, #4                        
+00F3 8004            200                     SJMP DLY
+                     201     
+00F5                 202     ERR_DELAY:
+00F5 7F01            203                     MOV R7, #1
+                     204                     ;LCALL DLY
+00F7 8000            205                     SJMP DLY
+                     206                      
+                     207     
+00F9                 208     DLY:
+                     209                     
+00F9 79FF            210     DLY0:   MOV  R1, #0FFH
+00FB 7AFF            211     DLY1:   MOV  R2, #0FFH
+00FD DAFE            212     DLY2:   DJNZ R2, DLY2
+00FF D9FA            213             DJNZ R1, DLY1
+0101 DBF6            214             DJNZ R3, DLY0
+0103 DFF4            215                     DJNZ R7, DLY ; DO THE WHOLE LOOP AGAIN  
+0105 22              216                     RET
+                     217                     END      
+                             ; -- DELAY FUNCTION ENDS
+A51 MACRO ASSEMBLER  PROJECT1                                                             03/25/2014 17:25:54 PAGE     5
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+AGAIN. . . . . . .  C ADDR   001BH   A   
+AGAIN2 . . . . . .  C ADDR   0057H   A   
+BOUNCING . . . . .  C ADDR   00B8H   A   
+B_DONE . . . . . .  C ADDR   00D6H   A   
+CHECK_COUNT. . . .  C ADDR   0023H   A   
+CHECK_CYC. . . . .  C ADDR   0033H   A   
+CHECK_DB . . . . .  C ADDR   002BH   A   
+COUNT. . . . . . .  C ADDR   006AH   A   
+CYCLIC . . . . . .  C ADDR   004AH   A   
+CYCLIC_DONE. . . .  C ADDR   0066H   A   
+C_DONE . . . . . .  C ADDR   007EH   A   
+DELAY. . . . . . .  C ADDR   00D7H   A   
+DLY. . . . . . . .  C ADDR   00F9H   A   
+DLY0 . . . . . . .  C ADDR   00F9H   A   
+DLY1 . . . . . . .  C ADDR   00FBH   A   
+DLY2 . . . . . . .  C ADDR   00FDH   A   
+DOUBLE_BOUNCE. . .  C ADDR   007FH   A   
+DO_AGAIN . . . . .  C ADDR   0072H   A   
+D_BOUNCE_DONE. . .  C ADDR   00B7H   A   
+ERR. . . . . . . .  C ADDR   003BH   A   
+ERR_DELAY. . . . .  C ADDR   00F5H   A   
+FLAG . . . . . . .  B ADDR   00A0H.7 A   
+HALF_SEC_CHK . . .  C ADDR   00D9H   A   
+JUMP2_BOUNCE . . .  C ADDR   0067H   A   
+LEFT . . . . . . .  C ADDR   00BCH   A   
+MAIN . . . . . . .  C ADDR   0016H   A   
+ONE_HALF_CHK . . .  C ADDR   00E7H   A   
+ONE_SEC_CHK. . . .  C ADDR   00E0H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+PART1. . . . . . .  C ADDR   008FH   A   
+PART2. . . . . . .  C ADDR   00A4H   A   
+RIGHT. . . . . . .  C ADDR   00C9H   A   
+TWO_SEC_CHK. . . .  C ADDR   00EEH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
