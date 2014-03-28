@@ -1,7 +1,7 @@
 ; ----- Kelby Sapien
 ; ----- Project 2
 		FLAG BIT P2.7
-		;LED EQU P1
+		LED EQU P1
 		
 		ORG 0000H
 		LJMP MAIN0
@@ -14,10 +14,9 @@
 		SETB FLAG
 		RETI
 MAIN0: 	MOV TMOD, #01H ; TIMER 0 MODE 1
-MAIN:	MOV P1, #0FFH
+MAIN:	MOV LED, #0FFH
 		SETB TCON.0
 		CLR FLAG
-		;MOV TMOD, #01H ;TIMER 0 MODE 1
 		
 AGAIN: 	JNB P0.0, CHECK_COUNT	; JUMP if P0.0 is low, otherwise do bouncing cat
 		LCALL BOUNCING			  ; lower pins have higher priority
@@ -39,9 +38,9 @@ CHECK_CYC:
 		SJMP MAIN
 
 ERR:	; IF ALL PINS ARE OFF, THEN JUST FLASH THEM                                                                                                                                                  
-		MOV P1,#0FFH
+		MOV LED,#0FFH
 		LCALL DELAY
-		MOV P1, #0
+		MOV LED, #0
 		LCALL DELAY
 		LJMP MAIN
 
@@ -53,7 +52,7 @@ CYCLIC:
 		;JNB P0.3, CYCLIC_DONE	; replaced with the interrupt
 		JB FLAG, CYCLIC_DONE
 		;MOV A, #0H
-		MOV P1, #0
+		MOV LED, #0
 		LCALL DELAY
 		MOV A, #80H
 		MOV R5, #8
@@ -63,12 +62,12 @@ AGAIN2:
 		;JB P0.2, DOUBLE_BOUNCE
 		;JNB P0.3, CYCLIC_DONE ; REPLACED WITH INTERRUPT FLAG
 		JB FLAG, CYCLIC_DONE
-		MOV P1, A
+		MOV LED, A
 		LCALL DELAY
 		MOV R6, A
 		RR A
 		ORL A, R6
-		;MOV P1, A
+		;MOV LED, A
 		;LCALL DELAY
 		DJNZ R5, AGAIN2
 		SJMP CYCLIC
@@ -82,7 +81,7 @@ JUMP2_BOUNCE:
 COUNT: 	
 		;JB P0.0, BOUNCING
 		JB FLAG, C_DONE
-        MOV P1, #0
+        MOV LED, #0
 		MOV R3, #0FFH
 DO_AGAIN:
 		;JB P0.0, BOUNCING
@@ -90,7 +89,7 @@ DO_AGAIN:
 		JB FLAG, C_DONE
 		;JNB P0.3, ERR
         LCALL DELAY		
-		INC P1
+		INC LED
 		DJNZ R3, DO_AGAIN
 		SJMP MAIN
 C_DONE:	RET
@@ -112,7 +111,7 @@ DOUBLE_BOUNCE:
 		MOV A, R4 ; store initial R1 VAL into A = 1000 0000
 		
 		ORL A, R5 ; A = 1000 0001
-		MOV P1, A ; DISPLAYS IN P1
+		MOV LED, A ; DISPLAYS IN LED
 		LCALL DELAY
 		
 PART1:
@@ -129,7 +128,7 @@ PART1:
 		MOV R5, A ;R2 = 0000 0010
 		ORL A, R4 ; R1 OR R2 A = 0100 0010 FIRST RUN
 		;CJNE A,   ; jump when 10 or 0001 1000
-		MOV P1, A ; DISPLAY
+		MOV LED, A ; DISPLAY
 		LCALL DELAY
 		DJNZ R6, PART1
 		MOV R6, #2 ; RESET COUNTER
@@ -150,7 +149,7 @@ PART2:
 		MOV R5, A ;R2 = 0000 0010
 		ORL A, R4 ; R1 OR R2 A = 0100 0010 FIRST RUN
 		;CJNE A,   ; jump when 10 or 0001 1000
-		MOV P1, A ; DISPLAY
+		MOV LED, A ; DISPLAY
 		LCALL DELAY
 		DJNZ R6, PART2
 		SJMP DOUBLE_BOUNCE		
@@ -165,14 +164,14 @@ BOUNCING:
 LEFT: 	;JNB P0.0, B_DONE	   ; RETURN IF DONE
 		JB FLAG, B_DONE
 		RR A
-		MOV P1, A
+		MOV LED, A
 		LCALL DELAY
 		DJNZ R0, LEFT ; USE A LOOP TO MOVE 7 POSITIONS
 		MOV R0, #6    ; RESET COUNTER
 RIGHT:	;JNB P0.0, B_DONE	   ; RETURN IF DONE
 		JB FLAG, B_DONE
 		RL A
-		MOV P1, A
+		MOV LED, A
 		
 		LCALL DELAY
 		DJNZ R0, RIGHT
