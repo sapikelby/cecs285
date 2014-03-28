@@ -1,19 +1,21 @@
 ; ----- Kelby Sapien
 ; ----- Project 2
-		FLAG BIT P2.7
+		FLAG BIT 0
 		LED EQU P1
 		
 		ORG 0000H
 		LJMP MAIN0
 		
 		ORG 0003H
-		CLR FLAG
-		RETI
-		
-		ORG 0013H
 		SETB FLAG
 		RETI
+		
+		;ORG 0013H
+		;SETB FLAG
+		;RETI
+		
 MAIN0: 	MOV TMOD, #01H ; TIMER 0 MODE 1
+		MOV IE, #81H
 MAIN:	MOV LED, #0FFH
 		SETB TCON.0
 		CLR FLAG
@@ -24,6 +26,8 @@ AGAIN: 	JNB P0.0, CHECK_COUNT	; JUMP if P0.0 is low, otherwise do bouncing cat
 		
 CHECK_COUNT:                                                                                                                                                                
 		JNB P0.1, CHECK_DB  ; JUMP if P0.1 is low, otherwise do counting
+		MOV P1, P2
+		MOV R0, P1
 		LCALL COUNT
 		SJMP MAIN		  ; AT EACH BRANCH, YOU WANT TO GO BACK TO AGAIN AND CHECK FOR PIN PRIORITY
 
@@ -79,18 +83,32 @@ JUMP2_BOUNCE:
 
 ;---- COUNTING MODE
 COUNT: 	
-		;JB P0.0, BOUNCING
 		JB FLAG, C_DONE
-        MOV LED, #0
+		JNB P3.7, COUNT_DOWN ; PIN IS LOW COUNT DOWN
+		SJMP COUNT_UP
+		;JB P0.0, BOUNCING
+		
+        ;MOV LED, #0
+		MOV LED, R0
 		MOV R3, #0FFH
-DO_AGAIN:
+COUNT_UP:
 		;JB P0.0, BOUNCING
 		;JNB P0.1, C_DONE
 		JB FLAG, C_DONE
 		;JNB P0.3, ERR
         LCALL DELAY		
 		INC LED
-		DJNZ R3, DO_AGAIN
+		DJNZ R3, COUNT_UP
+		SJMP MAIN
+		
+COUNT_DOWN:
+		;JB P0.0, BOUNCING
+		;JNB P0.1, C_DONE
+		JB FLAG, C_DONE
+		;JNB P0.3, ERR
+        LCALL DELAY		
+		DEC LED
+		DJNZ R3, COUNT_DOWN
 		SJMP MAIN
 C_DONE:	RET
 

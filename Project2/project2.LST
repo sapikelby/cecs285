@@ -1,9 +1,9 @@
-A51 MACRO ASSEMBLER  PROJECT1                                                             03/28/2014 12:25:35 PAGE     1
+A51 MACRO ASSEMBLER  PROJECT2                                                             03/28/2014 13:10:36 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02b
-OBJECT MODULE PLACED IN project1.OBJ
-ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE project1.a51 SET(SMALL) DEBUG EP
+OBJECT MODULE PLACED IN project2.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE project2.a51 SET(SMALL) DEBUG EP
 
 LOC  OBJ            LINE     SOURCE
 
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
 0047                  52     CYCLIC: 
                       53                     ;JB P0.0, JUMP2_BOUNCE ; RETURN TO PREVIOUS MODE IF PRESSED
                       54                     ;JB P0.1, COUNT
-A51 MACRO ASSEMBLER  PROJECT1                                                             03/28/2014 12:25:35 PAGE     2
+A51 MACRO ASSEMBLER  PROJECT2                                                             03/28/2014 13:10:36 PAGE     2
 
                       55                     ;JB P0.2, DOUBLE_BOUNCE
                       56                     ;JNB P0.3, CYCLIC_DONE  ; replaced with the interrupt
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
                      118     ; KEPT GETTING ERRORS B/C OF IT
                      119     ; fix overlap by calling two different loops
 008C                 120     DOUBLE_BOUNCE:
-A51 MACRO ASSEMBLER  PROJECT1                                                             03/28/2014 12:25:35 PAGE     3
+A51 MACRO ASSEMBLER  PROJECT2                                                             03/28/2014 13:10:36 PAGE     3
 
                      121                     ;JB P0.0, BOUNCING
                      122                     ;JB P0.1, COUNT ; JUMP BACK TO COUNTING MODE IF P0.1 IS HIGH
@@ -201,7 +201,7 @@ LOC  OBJ            LINE     SOURCE
 00CC 03              184                     RR A
 00CD F590            185                     MOV LED, A
 00CF 1200E4          186                     LCALL DELAY
-A51 MACRO ASSEMBLER  PROJECT1                                                             03/28/2014 12:25:35 PAGE     4
+A51 MACRO ASSEMBLER  PROJECT2                                                             03/28/2014 13:10:36 PAGE     4
 
 00D2 D8F5            187                     DJNZ R0, LEFT ; USE A LOOP TO MOVE 7 POSITIONS
 00D4 7806            188                     MOV R0, #6    ; RESET COUNTER
@@ -264,7 +264,7 @@ LOC  OBJ            LINE     SOURCE
 0113 DFEF            245           DJNZ R7, WAIT
 0115 22              246               RET
                      247           END
-A51 MACRO ASSEMBLER  PROJECT1                                                             03/28/2014 12:25:35 PAGE     5
+A51 MACRO ASSEMBLER  PROJECT2                                                             03/28/2014 13:10:36 PAGE     5
 
 SYMBOL TABLE LISTING
 ------ ----- -------
