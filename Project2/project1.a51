@@ -1,9 +1,10 @@
 ; ----- Kelby Sapien
 ; ----- Project 2
 		FLAG BIT P2.7
+		;LED EQU P1
 		
 		ORG 0000H
-		LJMP MAIN
+		LJMP MAIN0
 		
 		ORG 0003H
 		CLR FLAG
@@ -12,34 +13,37 @@
 		ORG 0013H
 		SETB FLAG
 		RETI
-		
+MAIN0: 	MOV TMOD, #01H ; TIMER 0 MODE 1
 MAIN:	MOV P1, #0FFH
+		SETB TCON.0
 		CLR FLAG
+		;MOV TMOD, #01H ;TIMER 0 MODE 1
+		
 AGAIN: 	JNB P0.0, CHECK_COUNT	; JUMP if P0.0 is low, otherwise do bouncing cat
 		LCALL BOUNCING			  ; lower pins have higher priority
-		SJMP AGAIN
+		SJMP MAIN
 		
 CHECK_COUNT:                                                                                                                                                                
 		JNB P0.1, CHECK_DB  ; JUMP if P0.1 is low, otherwise do counting
 		LCALL COUNT
-		SJMP AGAIN		  ; AT EACH BRANCH, YOU WANT TO GO BACK TO AGAIN AND CHECK FOR PIN PRIORITY
+		SJMP MAIN		  ; AT EACH BRANCH, YOU WANT TO GO BACK TO AGAIN AND CHECK FOR PIN PRIORITY
 
 CHECK_DB:
 		JNB P0.2, CHECK_CYC ; JUMP if P0.2 is low, otherwise do double_bounce
 		LCALL DOUBLE_BOUNCE
-		SJMP AGAIN
+		SJMP MAIN
 
 CHECK_CYC: 
 		JNB P0.3, ERR	; JUMP if P0.3 is low to error state, otherwise do cyclic mode
 		LCALL CYCLIC
-		SJMP AGAIN
+		SJMP MAIN
 
 ERR:	; IF ALL PINS ARE OFF, THEN JUST FLASH THEM                                                                                                                                                  
 		MOV P1,#0FFH
 		LCALL DELAY
 		MOV P1, #0
 		LCALL DELAY
-		LJMP AGAIN
+		LJMP MAIN
 
 ; ---- CYCLIC MODE
 CYCLIC: 
@@ -88,7 +92,7 @@ DO_AGAIN:
         LCALL DELAY		
 		INC P1
 		DJNZ R3, DO_AGAIN
-		SJMP AGAIN
+		SJMP MAIN
 C_DONE:	RET
 
 
@@ -108,7 +112,7 @@ DOUBLE_BOUNCE:
 		MOV A, R4 ; store initial R1 VAL into A = 1000 0000
 		
 		ORL A, R5 ; A = 1000 0001
-		MOV P1, A ; DISPLAYS IN LED
+		MOV P1, A ; DISPLAYS IN P1
 		LCALL DELAY
 		
 PART1:
@@ -178,41 +182,49 @@ B_DONE: RET
 
 ; -----------DELAY FUNCTION
 DELAY:
-		MOV R3, #220
+		;MOV R7, #10
+		;MOV R3, #220
 
 HALF_SEC_CHK: 				 ; LOWER PINS HAVE HIGHER PRIORITY
 		JNB P0.4, ONE_SEC_CHK	
-		MOV R7, #1			  
+		MOV R7, #10  
 		SJMP DLY
 
 ONE_SEC_CHK: 	
 		JNB P0.5, ONE_HALF_CHK	
-		MOV R7, #2			  
+		MOV R7, #20	  
 		SJMP DLY
 
 ONE_HALF_CHK: 	
 		JNB P0.6, TWO_SEC_CHK	
-		MOV R7, #3			  
+		MOV R7, #30  
 		SJMP DLY
 TWO_SEC_CHK: 	
 		JNB P0.7, ERR_DELAY	
-		MOV R7, #4			  
+		MOV R7, #40	  
 		SJMP DLY
 
 ERR_DELAY:
-		MOV R7, #1
+		MOV R7, #10
 		;LCALL DLY
 		SJMP DLY
 		 
 
 DLY:
-		
-DLY0:  	MOV  R1, #0FFH
-DLY1:  	MOV  R2, #0FFH
-DLY2:  	DJNZ R2, DLY2
-       	DJNZ R1, DLY1
-        DJNZ R3, DLY0
-		DJNZ R7, DLY ; DO THE WHOLE LOOP AGAIN	
-		RET
-	   	END	 
-; -- DELAY FUNCTION ENDS
+
+; Calculate the initial counting value x:
+; In At89C51RD2 1 machine cycle equals 12 crystal cycles:
+; (12/11.0592MHz)(2^16-x)=50ms
+; solve the equation for x, we obtain:
+; x=2^16-50ms*11.0592MHz/12=19456=4C00H
+
+WAIT: MOV TL0, #0;load initial counting value
+      MOV TH0, #4CH;
+      SETB TR0;turn on T0
+HERE: JNB TF0, HERE;wait for timer 0 to overflow
+      CLR TR0 ;turn off timer 0
+      CLR TF0 ;clear TF0 as interrupt is not used, 
+        ;it will not be cleared by hardware.
+      DJNZ R7, WAIT
+	  RET
+      END
