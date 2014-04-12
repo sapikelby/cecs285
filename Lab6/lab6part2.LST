@@ -1,0 +1,64 @@
+A51 MACRO ASSEMBLER  LAB6PART2                                                            04/11/2014 12:57:31 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02b
+OBJECT MODULE PLACED IN lab6part2.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE lab6part2.a51 SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1                     ;BOUNCING CAT WITH DPTRS
+  0090                 2                     LED EQU P1
+                       3                     
+0000                   4                     ORG 0
+0000                   5     MAIN:
+0000 7C06              6                     MOV R4, #6  ; COUNTER
+0002 900400            7                     MOV DPTR, #TABLE
+0005 E4                8                     CLR A
+                       9                     
+0006                  10     DOUBLE_BOUNCE:
+0006 E4               11                     CLR A
+0007 93               12                     MOVC A, @A+DPTR
+0008 F590             13                     MOV LED, A ; OUTPUT DATA ONTO PORT 1
+                      14                     
+000A 120012           15                     LCALL DELAY
+000D A3               16                     INC DPTR
+000E DCF6             17                     DJNZ R4, DOUBLE_BOUNCE
+0010 80EE             18                     SJMP MAIN
+                      19             
+0012                  20     DELAY:
+                      21                     
+0012 79FF             22     DLY0:   MOV  R1, #0FFH
+0014 7AFF             23     DLY1:   MOV  R2, #0FFH
+0016 DAFE             24     DLY2:   DJNZ R2, DLY2
+0018 D9FA             25             DJNZ R1, DLY1
+001A DBF6             26             DJNZ R3, DLY0   
+001C 22               27                     RET
+                      28                     
+0400                  29                     ORG 0400H
+0400 81422418         30     TABLE:  DB 81H,42H,24H,18H,24H,42H
+0404 2442                    
+                      31                     END      
+A51 MACRO ASSEMBLER  LAB6PART2                                                            04/11/2014 12:57:31 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+DELAY. . . . . . .  C ADDR   0012H   A   
+DLY0 . . . . . . .  C ADDR   0012H   A   
+DLY1 . . . . . . .  C ADDR   0014H   A   
+DLY2 . . . . . . .  C ADDR   0016H   A   
+DOUBLE_BOUNCE. . .  C ADDR   0006H   A   
+LED. . . . . . . .  D ADDR   0090H   A   
+MAIN . . . . . . .  C ADDR   0000H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+TABLE. . . . . . .  C ADDR   0400H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

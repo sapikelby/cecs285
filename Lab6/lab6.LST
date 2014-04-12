@@ -1,0 +1,42 @@
+A51 MACRO ASSEMBLER  LAB6                                                                 04/11/2014 12:04:15 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02b
+OBJECT MODULE PLACED IN lab6.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE lab6.a51 SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1                     ORG 0
+0000                   2     MAIN:
+0000 E4                3                     CLR A
+0001 7840              4                     MOV R0, #40H ; destination address
+0003 7A0A              5                     MOV R2, #10
+0005 A680              6     AGAIN:  MOV @R0, P0
+0007 26                7                     ADD A, @R0
+                       8                     
+0008 5002              9                     JNC SKIP
+000A 054B             10                     INC 4BH ; increment 4BH for each carry (HIGH BYTE)
+                      11                     
+000C 08               12     SKIP:   INC R0  ; increment the location to which you are adding the string at position(i)
+000D DAF6             13                     DJNZ R2, AGAIN
+000F F54A             14                     MOV 4AH, A ; MOVE LOW BYTE INTO 4AH
+                      15                     END
+A51 MACRO ASSEMBLER  LAB6                                                                 04/11/2014 12:04:15 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+AGAIN. . . . . . .  C ADDR   0005H   A   
+MAIN . . . . . . .  C ADDR   0000H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+SKIP . . . . . . .  C ADDR   000CH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
