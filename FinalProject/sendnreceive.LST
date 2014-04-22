@@ -1,0 +1,116 @@
+A51 MACRO ASSEMBLER  SENDNRECEIVE                                                         04/18/2014 11:02:32 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02
+OBJECT MODULE PLACED IN sendnreceive.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE sendnreceive.a51 SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+                       2     
+                       3     
+                       4     
+                       5     
+                       6     
+                       7     
+                       8     
+                       9     
+0000                  10             ORG 0
+                      11     
+0000 758920           12             MOV TMOD, #20H
+0003 758DFD           13             MOV TH1, #0FDH
+0006 759850           14             MOV SCON, #50H
+0009                  15     REPEAT:    
+0009 120021           16         LCALL RECEIVE1BYTE
+000C F5F0             17             MOV B, A
+000E 900057           18             MOV DPTR, #MSG_HEAD
+0011 120041           19             LCALL SEND1LINE
+0014 E5F0             20             MOV A, B
+0016 120032           21             LCALL SEND1BYTE
+0019 900063           22             MOV DPTR, #MSG_END
+001C 120041           23             LCALL SEND1LINE
+001F 80E8             24         SJMP REPEAT
+                      25     
+0021                  26     RECEIVE1BYTE:
+0021 C298             27             CLR RI
+0023 D28E             28             SETB TR1
+0025                  29     STAY1:  
+0025 A298             30             MOV C,RI
+0027 50FC             31             JNC STAY1
+0029 E599             32             MOV A, SBUF              ; move what we just received to register A
+002B F590             33         MOV P1, A    
+002D C298             34             CLR RI
+002F C28E             35             CLR TR1
+0031 22               36             RET
+                      37             
+0032                  38     SEND1BYTE:
+0032 C299             39             CLR TI
+0034 D28E             40             SETB TR1
+0036 F599             41             MOV SBUF, A
+0038                  42     STAY2:  
+0038 A299             43             MOV C,TI
+003A 50FC             44             JNC STAY2
+003C C299             45         CLR TI
+003E C28E             46             CLR TR1
+0040 22               47         RET
+                      48             
+0041                  49     SEND1LINE:
+0041 C299             50             CLR TI
+0043 D28E             51             SETB TR1
+0045 E4               52     AGAIN:  CLR A
+0046 93               53             MOVC A, @A+DPTR
+0047 600D             54             JZ DONE
+0049 A3               55             INC DPTR
+004A F599             56             MOV SBUF, A
+004C                  57     STAY3:  
+004C A299             58             MOV C,TI
+A51 MACRO ASSEMBLER  SENDNRECEIVE                                                         04/18/2014 11:02:32 PAGE     2
+
+004E 50FC             59             JNC STAY3
+0050 C299             60         CLR TI
+0052 80F1             61             SJMP AGAIN
+0054 C28E             62             CLR TR1
+0056 22               63     DONE:RET
+                      64     
+0057 49207265         65     MSG_HEAD: DB "I received ",0
+005B 63656976                
+005F 65642000                
+0063 210A0D00         66     MSG_END: DB '!', 0AH, 0DH, 0 ;ODH for carriage return, 0AH for newline
+                      67     
+                      68             END
+                             
+A51 MACRO ASSEMBLER  SENDNRECEIVE                                                         04/18/2014 11:02:32 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+AGAIN. . . . . . .  C ADDR   0045H   A   
+B. . . . . . . . .  D ADDR   00F0H   A   
+DONE . . . . . . .  C ADDR   0056H   A   
+MSG_END. . . . . .  C ADDR   0063H   A   
+MSG_HEAD . . . . .  C ADDR   0057H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+RECEIVE1BYTE . . .  C ADDR   0021H   A   
+REPEAT . . . . . .  C ADDR   0009H   A   
+RI . . . . . . . .  B ADDR   0098H.0 A   
+SBUF . . . . . . .  D ADDR   0099H   A   
+SCON . . . . . . .  D ADDR   0098H   A   
+SEND1BYTE. . . . .  C ADDR   0032H   A   
+SEND1LINE. . . . .  C ADDR   0041H   A   
+STAY1. . . . . . .  C ADDR   0025H   A   
+STAY2. . . . . . .  C ADDR   0038H   A   
+STAY3. . . . . . .  C ADDR   004CH   A   
+TH1. . . . . . . .  D ADDR   008DH   A   
+TI . . . . . . . .  B ADDR   0098H.1 A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR1. . . . . . . .  B ADDR   0088H.6 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
