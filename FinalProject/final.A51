@@ -8,7 +8,7 @@
 // 9600 baud rate is how fast you send the info
 
 	ORG 0
-
+	;MOV TMOD, #20H
 	MOV TMOD, #20H
 	MOV TH1, #0FDH
 	MOV SCON, #50H
