@@ -1,0 +1,53 @@
+A51 MACRO ASSEMBLER  PART3                                                                04/25/2014 12:29:47 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02b
+OBJECT MODULE PLACED IN part3.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE part3.a51 SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ; Write a program to add BCD number 197795H to 344548H and save the BCD result in RAM memor
+                             y locations starting at 50H. 
+                       2     
+0000                   3     ORG 0
+                       4     
+0000 7448              5     MOV A, #48H
+0002 2495              6     ADD A, #95H ; 48H + 95H
+0004 D4                7     DA A
+                       8     
+0005 F8                9     MOV R0, A 
+                      10     
+0006 7445             11     MOV A, #45H
+0008 2477             12     ADD A, #77H ; 45h + 77H
+000A D4               13     DA A
+                      14     
+000B F9               15     MOV R1, A
+                      16     
+000C 7434             17     MOV A, #34H
+000E 2419             18     ADD A, #19H ; 34H + 89H
+0010 D4               19     DA A
+                      20     
+0011 FA               21     MOV R2, A
+                      22     
+0012 8A50             23     MOV 50H, R2
+0014 8951             24     MOV 51H, R1
+0016 8852             25     MOV 52H, R0
+                      26     
+                      27     END
+                             
+                             
+A51 MACRO ASSEMBLER  PART3                                                                04/25/2014 12:29:47 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

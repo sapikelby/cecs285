@@ -1,0 +1,48 @@
+A51 MACRO ASSEMBLER  PART2                                                                04/25/2014 12:30:09 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02b
+OBJECT MODULE PLACED IN part2.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE part2.a51 SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     ORG 0
+                       2     
+                       3     ;Write a program to subtract 197F9AH from 344548H and save the result in RAM memory locatio
+                             ns starting at 45H. 
+0000 C3                4     CLR C
+0001 7448              5     MOV A, #48H
+0003 949A              6     SUBB A, #9AH ; 48H - 9AH
+                       7     
+0005 F8                8     MOV R0, A 
+                       9     
+0006 7445             10     MOV A, #45H
+0008 947F             11     SUBB A, #7FH ; BC - FC
+                      12     
+000A F9               13     MOV R1, A
+                      14     
+000B 7434             15     MOV A, #34H
+000D 9419             16     SUBB A, #19H ; 34H - 89H
+                      17     
+000F FA               18     MOV R2, A
+                      19     
+0010 8A45             20     MOV 45H, R2
+0012 8946             21     MOV 46H, R1
+0014 8847             22     MOV 47H, R0
+                      23     
+                      24     END
+A51 MACRO ASSEMBLER  PART2                                                                04/25/2014 12:30:09 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

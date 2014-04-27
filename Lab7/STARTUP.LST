@@ -1,0 +1,47 @@
+A51 MACRO ASSEMBLER  STARTUP                                                              04/25/2014 12:13:24 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02b
+OBJECT MODULE PLACED IN STARTUP.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE STARTUP.A51 SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     ORG 0
+                       2     
+                       3     ;Write a program to add 897F9AH to 34BC48H and save the result in RAM memory locations star
+                             ting at 40H
+0000 C3                4     CLR C
+0001 7448              5     MOV A, #48H
+0003 249A              6     ADD A, #9AH ; 48H + 9AH
+                       7     
+0005 F8                8     MOV R0, A 
+                       9     
+0006 74BC             10     MOV A, #0BCH
+0008 347F             11     ADDC A, #7FH ; BC + FC
+                      12     
+000A F9               13     MOV R1, A
+                      14     
+000B 7434             15     MOV A, #34H
+000D 3489             16     ADDC A, #89H ; 34H + 89H
+                      17     
+000F FA               18     MOV R2, A
+                      19     
+0010 8A40             20     MOV 40H, R2
+0012 8941             21     MOV 41H, R1
+0014 8842             22     MOV 42H, R0
+*** WARNING #A41 IN 22 (STARTUP.A51, LINE 22): MISSING 'END' STATEMENT
+A51 MACRO ASSEMBLER  STARTUP                                                              04/25/2014 12:13:24 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  1 WARNING(S), 0 ERROR(S)
