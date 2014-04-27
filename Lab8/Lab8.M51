@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        04/25/2014  14:48:05  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        04/27/2014  08:04:17  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
@@ -32,13 +32,17 @@ SYMBOL TABLE OF MODULE:  Lab8 (LAB8)
   C:000DH         SYMBOL        AGAIN
   C:0000H         SYMBOL        AVG
   D:00F0H         SYMBOL        B
-  C:0021H         SYMBOL        BIGLOOP
-  C:0025H         SYMBOL        LOOP
-  C:0019H         SYMBOL        MAX
-  C:0019H         SYMBOL        MAX_NUM
+  C:003BH         SYMBOL        BIGLOOP
+  C:0030H         SYMBOL        FINALSTEP
+  C:003FH         SYMBOL        LOOP
+  C:0024H         SYMBOL        LOOP1
+  C:002DH         SYMBOL        LOOP2
+  C:0033H         SYMBOL        MAX
+  C:0019H         SYMBOL        MIN
+  C:0020H         SYMBOL        MINLOOP
   C:0250H         SYMBOL        MYDATA
-  C:0031H         SYMBOL        NEXT
-  C:002EH         SYMBOL        SECONDLOOP
+  C:004BH         SYMBOL        NEXT
+  C:0048H         SYMBOL        SECONDLOOP
   C:0000H         LINE#         4
   C:0001H         LINE#         5
   C:0003H         LINE#         6
@@ -55,29 +59,44 @@ SYMBOL TABLE OF MODULE:  Lab8 (LAB8)
   C:0014H         LINE#         20
   C:0016H         LINE#         23
   C:0017H         LINE#         24
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/27/2014  08:04:17  PAGE 2
+
+
   C:0018H         LINE#         25
-  C:0019H         LINE#         32
-  C:001BH         LINE#         33
-  C:001DH         LINE#         34
-BL51 BANKED LINKER/LOCATER V6.22                                                      04/25/2014  14:48:05  PAGE 2
-
-
+  C:0019H         LINE#         30
+  C:001BH         LINE#         31
+  C:001DH         LINE#         32
+  C:001FH         LINE#         34
   C:0020H         LINE#         36
-  C:0021H         LINE#         38
-  C:0022H         LINE#         39
-  C:0025H         LINE#         41
-  C:0027H         LINE#         42
-  C:0029H         LINE#         43
-  C:002AH         LINE#         46
-  C:002CH         LINE#         47
-  C:002EH         LINE#         51
-  C:002FH         LINE#         52
-  C:0031H         LINE#         54
-  C:0033H         LINE#         55
+  C:0021H         LINE#         37
+  C:0024H         LINE#         39
+  C:0026H         LINE#         40
+  C:0028H         LINE#         41
+  C:0029H         LINE#         44
+  C:002BH         LINE#         45
+  C:002DH         LINE#         47
+  C:002EH         LINE#         49
+  C:0030H         LINE#         52
+  C:0032H         LINE#         53
+  C:0033H         LINE#         60
+  C:0035H         LINE#         61
+  C:0037H         LINE#         62
+  C:003AH         LINE#         64
+  C:003BH         LINE#         66
+  C:003CH         LINE#         67
+  C:003FH         LINE#         69
+  C:0041H         LINE#         70
+  C:0043H         LINE#         71
+  C:0044H         LINE#         73
+  C:0046H         LINE#         74
+  C:0048H         LINE#         77
+  C:0049H         LINE#         78
+  C:004BH         LINE#         80
+  C:004DH         LINE#         81
   -------         ENDMOD        LAB8
 
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 003DH BYTE ( 2%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0057H BYTE ( 4%) *
 ******************************************************************************
 
 Program Size: data=8.0 xdata=0 code=601

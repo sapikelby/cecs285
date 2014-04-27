@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  LAB8                                                                 04/25/2014 14:48:05 PAGE     1
+A51 MACRO ASSEMBLER  LAB8                                                                 04/27/2014 08:04:17 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02b
@@ -13,9 +13,9 @@ LOC  OBJ            LINE     SOURCE
 0000 E4                4                     CLR A
 0001 7930              5                     MOV R1, #30H ; destination address
 0003 7870              6                     MOV R0, #70H  ;// KEEP VALUE
-0005 7A09              7                     MOV R2, #9
-0007 75F009            8                     MOV B, #9
-000A 900250            9                     MOV DPTR, #MYDATA
+0005 7A09              7                     MOV R2, #9 ; COUNTER
+0007 75F009            8                     MOV B, #9 ; USED TO DIVIDE (SUM/# OF NUMS)
+000A 900250            9                     MOV DPTR, #MYDATA ; DPTRS USED TO TRAVERSE LOOKUP TABLE
 000D                  10     AGAIN:  
 000D E4               11                     CLR A
 000E 93               12                     MOVC A, @A+DPTR
@@ -34,47 +34,73 @@ LOC  OBJ            LINE     SOURCE
 0018 FF               25                     MOV R7, A 
                       26                     ; end division
                       27                     
-                      28     
-0019                  29     MAX_NUM:
-                      30     
-0019                  31     MAX:
-0019 7930             32                     MOV R1, #30H
-001B 7A09             33                     MOV R2, #9
-001D 75F000           34                     MOV B, #0
-                      35                             
-0020 E4               36                     CLR A
-0021                  37     BIGLOOP:
-0021 E7               38                     MOV A, @R1
-0022 B5F000           39                     CJNE A, B, LOOP  ;COMPARE A AND B
-                      40                     
-0025 4007             41     LOOP:   JC SECONDLOOP  ; JUMP IF A < B
-0027 F5F0             42                     MOV B, A ; ELSE MOVE A TO B (A > B) 
-0029 09               43                     INC R1
-                      44                     
-                      45                     
-002A DAF5             46                     DJNZ R2, BIGLOOP
-002C 8003             47                     SJMP NEXT
-002E                  48     SECONDLOOP: 
-                      49                     ;MOV B, A
-                      50                     ;MOV R5, A
-002E 09               51                     INC R1
-002F DAF0             52                     DJNZ R2, BIGLOOP
-                      53                     
-0031 E5F0             54     NEXT:   MOV A, B
-0033 FD               55                     MOV R5, A
-                      56                     
+                      28     ; ---- MIN ROUTINE
+0019                  29     MIN:
+0019 7930             30                     MOV R1, #30H
+001B 7A09             31                     MOV R2, #9
+001D 87F0             32                     MOV B, @R1 ; ASSUME 1ST ELEMENT IS THE MIN VALUE
+                      33                             
+001F E4               34                     CLR A
+0020                  35     MINLOOP:
+0020 E7               36                     MOV A, @R1
+0021 B5F000           37                     CJNE A, B, LOOP1  ;COMPARE A AND B
+                      38                     
+0024 5007             39     LOOP1:  JNC LOOP2  ; JUMP IF A > B
+0026 F5F0             40                     MOV B, A ; ELSE MOVE A TO B (A < B) 
+0028 09               41                     INC R1
+                      42                     
+                      43                     
+0029 DAF5             44                     DJNZ R2, MINLOOP
+002B 8003             45                     SJMP FINALSTEP
+002D                  46     LOOP2: 
+002D 09               47                     INC R1
+                      48                     ;MOV B, A
+002E DAF0             49                     DJNZ R2, MINLOOP
+                      50                     
+0030                  51     FINALSTEP:      
+0030 E5F0             52                     MOV A, B
+0032 FD               53                     MOV R5, A
+                      54                     
+                      55     ; ---- END ROUTINE
+                      56     
                       57     
-                      58     
-A51 MACRO ASSEMBLER  LAB8                                                                 04/25/2014 14:48:05 PAGE     2
+                      58     ; ---- MAX ROUTINE
+A51 MACRO ASSEMBLER  LAB8                                                                 04/27/2014 08:04:17 PAGE     2
 
-0250                  59     ORG 250H
-0250 03090609         60     MYDATA:   DB   3, 9, 6, 9, 7, 6, 4, 2, 8
+0033                  59     MAX:
+0033 7930             60                     MOV R1, #30H
+0035 7A09             61                     MOV R2, #9
+0037 75F000           62                     MOV B, #0 ; START MAX AT 0 OR 1ST ELEMENT
+                      63                             
+003A E4               64                     CLR A
+003B                  65     BIGLOOP:
+003B E7               66                     MOV A, @R1
+003C B5F000           67                     CJNE A, B, LOOP  ;COMPARE A AND B
+                      68                     
+003F 4007             69     LOOP:   JC SECONDLOOP  ; JUMP IF A < B
+0041 F5F0             70                     MOV B, A ; ELSE MOVE A TO B (A > B) 
+0043 09               71                     INC R1
+                      72                     
+0044 DAF5             73                     DJNZ R2, BIGLOOP
+0046 8003             74                     SJMP NEXT
+                      75                     
+0048                  76     SECONDLOOP: 
+0048 09               77                     INC R1
+0049 DAF0             78                     DJNZ R2, BIGLOOP
+                      79                     
+004B E5F0             80     NEXT:   MOV A, B
+004D FE               81                     MOV R6, A
+                      82                     
+                      83     ; ---- MAX ROUTINE ENDS
+                      84     
+0250                  85     ORG 250H
+0250 03090609         86     MYDATA:   DB   3, 9, 6, 9, 7, 6, 4, 2, 8
 0254 07060402                
 0258 08                      
-                      61      
-                      62     
-                      63     END
-A51 MACRO ASSEMBLER  LAB8                                                                 04/25/2014 14:48:05 PAGE     3
+                      87      
+                      88     
+                      89     END
+A51 MACRO ASSEMBLER  LAB8                                                                 04/27/2014 08:04:17 PAGE     3
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -85,13 +111,17 @@ N A M E             T Y P E  V A L U E   ATTRIBUTES
 AGAIN. . . . . . .  C ADDR   000DH   A   
 AVG. . . . . . . .  C ADDR   0000H   A   
 B. . . . . . . . .  D ADDR   00F0H   A   
-BIGLOOP. . . . . .  C ADDR   0021H   A   
-LOOP . . . . . . .  C ADDR   0025H   A   
-MAX. . . . . . . .  C ADDR   0019H   A   
-MAX_NUM. . . . . .  C ADDR   0019H   A   
+BIGLOOP. . . . . .  C ADDR   003BH   A   
+FINALSTEP. . . . .  C ADDR   0030H   A   
+LOOP . . . . . . .  C ADDR   003FH   A   
+LOOP1. . . . . . .  C ADDR   0024H   A   
+LOOP2. . . . . . .  C ADDR   002DH   A   
+MAX. . . . . . . .  C ADDR   0033H   A   
+MIN. . . . . . . .  C ADDR   0019H   A   
+MINLOOP. . . . . .  C ADDR   0020H   A   
 MYDATA . . . . . .  C ADDR   0250H   A   
-NEXT . . . . . . .  C ADDR   0031H   A   
-SECONDLOOP . . . .  C ADDR   002EH   A   
+NEXT . . . . . . .  C ADDR   004BH   A   
+SECONDLOOP . . . .  C ADDR   0048H   A   
 
 
 REGISTER BANK(S) USED: 0 
