@@ -1,0 +1,100 @@
+A51 MACRO ASSEMBLER  LAB8                                                                 04/25/2014 14:48:05 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02b
+OBJECT MODULE PLACED IN lab8.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE lab8.a51 SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     ORG 0
+                       2     
+0000                   3     AVG:
+0000 E4                4                     CLR A
+0001 7930              5                     MOV R1, #30H ; destination address
+0003 7870              6                     MOV R0, #70H  ;// KEEP VALUE
+0005 7A09              7                     MOV R2, #9
+0007 75F009            8                     MOV B, #9
+000A 900250            9                     MOV DPTR, #MYDATA
+000D                  10     AGAIN:  
+000D E4               11                     CLR A
+000E 93               12                     MOVC A, @A+DPTR
+000F F7               13                     MOV @R1, A
+0010 26               14                     ADD A, @R0
+0011 F6               15                     MOV @R0, A
+                      16                     
+0012 09               17                     INC R1
+0013 A3               18                     INC DPTR
+                      19             
+0014 DAF7             20                     DJNZ R2, AGAIN
+                      21                     
+                      22                     ; divide
+0016 E6               23                     MOV A, @R0
+0017 84               24                     DIV AB
+0018 FF               25                     MOV R7, A 
+                      26                     ; end division
+                      27                     
+                      28     
+0019                  29     MAX_NUM:
+                      30     
+0019                  31     MAX:
+0019 7930             32                     MOV R1, #30H
+001B 7A09             33                     MOV R2, #9
+001D 75F000           34                     MOV B, #0
+                      35                             
+0020 E4               36                     CLR A
+0021                  37     BIGLOOP:
+0021 E7               38                     MOV A, @R1
+0022 B5F000           39                     CJNE A, B, LOOP  ;COMPARE A AND B
+                      40                     
+0025 4007             41     LOOP:   JC SECONDLOOP  ; JUMP IF A < B
+0027 F5F0             42                     MOV B, A ; ELSE MOVE A TO B (A > B) 
+0029 09               43                     INC R1
+                      44                     
+                      45                     
+002A DAF5             46                     DJNZ R2, BIGLOOP
+002C 8003             47                     SJMP NEXT
+002E                  48     SECONDLOOP: 
+                      49                     ;MOV B, A
+                      50                     ;MOV R5, A
+002E 09               51                     INC R1
+002F DAF0             52                     DJNZ R2, BIGLOOP
+                      53                     
+0031 E5F0             54     NEXT:   MOV A, B
+0033 FD               55                     MOV R5, A
+                      56                     
+                      57     
+                      58     
+A51 MACRO ASSEMBLER  LAB8                                                                 04/25/2014 14:48:05 PAGE     2
+
+0250                  59     ORG 250H
+0250 03090609         60     MYDATA:   DB   3, 9, 6, 9, 7, 6, 4, 2, 8
+0254 07060402                
+0258 08                      
+                      61      
+                      62     
+                      63     END
+A51 MACRO ASSEMBLER  LAB8                                                                 04/25/2014 14:48:05 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+AGAIN. . . . . . .  C ADDR   000DH   A   
+AVG. . . . . . . .  C ADDR   0000H   A   
+B. . . . . . . . .  D ADDR   00F0H   A   
+BIGLOOP. . . . . .  C ADDR   0021H   A   
+LOOP . . . . . . .  C ADDR   0025H   A   
+MAX. . . . . . . .  C ADDR   0019H   A   
+MAX_NUM. . . . . .  C ADDR   0019H   A   
+MYDATA . . . . . .  C ADDR   0250H   A   
+NEXT . . . . . . .  C ADDR   0031H   A   
+SECONDLOOP . . . .  C ADDR   002EH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
