@@ -1,8 +1,15 @@
-// This program will receive single character, 
-// display it on the on-board 8 LEDs, send message 
-// "I received (put the received character here).", 
-// and repeat forever. Set the baud rate to be 9600,
-// 8-bit data, and 1 stop
+;Write an 8051 assembly program that reads the following data from program ROM: 17, 37, 9, 18, 11, 26, 23, 43. 
+;Save them to memory locations start from 40H, find the average, maximum number and minimum number and 
+;save them to locations 48H, 49H and 4AH, then display the following menu to user:
+
+;Please select from the following:
+;1.	Display original data
+;2.	Find and display average
+;3.	Find and display maximum
+;4.	Find and display minimum
+
+; FINAL PROJECT CECS 285
+; PROGRAMMER: KELBY SAPIEN
 
 // UART window tells you what it receives, and port 1 displays the ascii code for that transmission
 // 9600 baud rate is how fast you send the info
@@ -16,20 +23,13 @@
 MAIN:
 	LCALL MOVING_DATA ; MOVE DATA INTO RAM
 
-DISPLAY_MENU:    
-    ;LCALL RECEIVE1BYTE
-	;MOV B, A
+DISPLAY_MENU: 
 	MOV DPTR, #MSG_HEAD
 	LCALL SEND1LINE
 	LCALL RECEIVE1BYTE
 	LCALL CHECK_DISPLAY_ALL
-	;MOV B, A
 	
-	;MOV A, B
-	;LCALL SEND1BYTE
-	;MOV DPTR, #MSG_END
-	;LCALL SEND1LINE
-    SJMP DISPLAY_MENU
+    ;SJMP DISPLAY_MENU
 
 CHECK_DISPLAY_ALL: 
 		; ASCII REPRESENTATION OF NUMBER PRESSED GET PUSHED TO PORT 1
@@ -37,11 +37,9 @@ CHECK_DISPLAY_ALL:
 		; COMPARE PORT 1 TO 31H (HEX VAL OF 1) AND SO ON...
 		MOV B, P1
 		MOV A, #31H
-		CJNE A, B, CHECK_AVG ; IF NOT EQUAL TO HEX VALUE
-		;JNB P1.0, CHECK_AVG  ; JUMP if P0.1 is low, otherwise CHECK_AVG
-		;MOV DPTR, #DATA_STRING
-		;MOV DPTR, #DATA_VALUES
-		;LCALL SEND1LINE
+		CJNE A, B, CHECK_AVG ; IF NOT EQUAL TO HEX VALUE JUMP TO NEXT CASE
+		MOV DPTR, #MSG_ORIGINAL
+		LCALL SEND1LINE
 		LCALL DISPLAY_ASCII
 		SJMP DISPLAY_MENU		 
 
@@ -50,9 +48,9 @@ CHECK_AVG:
 		MOV B, P1
 		MOV A, #32H
 		CJNE A, B, CHECK_MIN ; IF NOT EQUAL TO HEX VALUE
+		MOV DPTR, #MSG_AVG
+		LCALL SEND1LINE
 		LCALL AVG
-		;LCALL SEND1BYTE
-		;MOV A, @R0 ; MOVE WHAT IS IN LOCATION 48H INTO A
 		LCALL DISPLAY_AVG
 		SJMP DISPLAY_MENU
 
@@ -60,18 +58,31 @@ CHECK_MIN:
 		; ASCII REP ON P1 == 33H
 		MOV B, P1
 		MOV A, #33H
-		CJNE A, B, DISPLAY_MENU  ;COMPARE A AND B
+		CJNE A, B, CHECK_MAX  ;COMPARE A AND B
+		MOV DPTR, #MSG_MIN
+		LCALL SEND1LINE
 		LCALL MINIMUM
 		;MOV A, @R0
 		LCALL DISPLAY_AVG
 		SJMP DISPLAY_MENU
 		;MOV R0, A
 		
+CHECK_MAX:
+		MOV B, P1
+		MOV A, #34H
+		CJNE A, B, INVALID_ENTRY  ;COMPARE A AND B
+		MOV DPTR, #MSG_MAX
+		LCALL SEND1LINE
+		LCALL MAXIMUM
+		LCALL DISPLAY_AVG
+		SJMP DISPLAY_MENU
 
-;DISPLAY_ORIGINAL: 
-;		MOV DPTR, #DATA_STRING
-;		LCALL SEND1LINE
-
+INVALID_ENTRY:
+		MOV DPTR, #MSG_ERROR ; DISPLAY ERROR MESSAGE TO USER
+		LCALL SEND1LINE
+		SJMP DISPLAY_MENU
+		
+		
 ; --- INSERT DATA INTO RAM
 MOVING_DATA:
 		CLR A
@@ -120,6 +131,36 @@ FINALSTEP:
 		MOV @R0, A
 		RET
 ; ---- END ROUTINE
+
+
+; ---- MAX ROUTINE
+MAXIMUM:
+		MOV R0, #49H
+		MOV R1, #40H
+		MOV R2, #8
+		MOV B, #0 ; START MAX AT 0 OR 1ST ELEMENT
+			
+		CLR A
+BIGLOOP:
+		MOV A, @R1
+		CJNE A, B, LOOP  ;COMPARE A AND B
+		
+LOOP:  	JC SECONDLOOP  ; JUMP IF A < B
+		MOV B, A ; ELSE MOVE A TO B (A > B) 
+		INC R1
+		
+		DJNZ R2, BIGLOOP
+		SJMP NEXT
+		
+SECONDLOOP: 
+		INC R1
+		DJNZ R2, BIGLOOP
+		
+NEXT: 	MOV A, B
+		MOV @R0, A
+		RET
+		
+; ---- MAX ROUTINE ENDS
 
 
 AVG:
@@ -301,6 +342,12 @@ DATA_VALUES: DB 17, 37, 9, 18, 11, 26, 23, 43, 0
 ;MSG_END: DB '!', 0AH, 0DH, 0 ;ODH for carriage return, 0AH for newline
 ;MSG_HEAD: DB "I received ",0
 MSG_HEAD: DB 0AH, "Please select from the following:", 0AH, "1. Display original data", 0AH, "2. Find and display average", 0AH, "3. Find and display maximum", 0AH, "4. Find and display minimum", 0AH, 0 
+MSG_ORIGINAL: DB 0AH, "Here is the original data: ", 0AH, 0
+MSG_AVG: DB 0AH, "Average: ", 0AH, 0
+MSG_MIN: DB 0AH, "Minimum: ", 0AH, 0
+MSG_MAX: DB 0AH, "Maximum: ", 0AH, 0
+MSG_ERROR: DB 0AH, "Invalid entry, try again!", 0AH, 0
+
 ;1.	Display original data - a prompt should follow it saying "original data: …" 
 ;2.	Find and display average
 ;3.	Find and display maximum
